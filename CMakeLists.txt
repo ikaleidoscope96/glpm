@@ -9,11 +9,10 @@ find_package(SDL3_image REQUIRED CONFIG REQUIRED COMPONENTS SDL3_image-shared)
 find_package(SDL3_mixer REQUIRED CONFIG REQUIRED COMPONENTS SDL3_mixer-shared)
 find_package(SDL3_ttf REQUIRED CONFIG REQUIRED COMPONENTS SDL3_ttf-shared)
 
-add_executable(glpm
-  src/main.cpp
-  src/App.cpp
-  src/Texture.cpp
+file(GLOB_RECURSE SRC_FILES CONFIGURE_DEPENDS
+  ${CMAKE_SOURCE_DIR}/src/*.cpp
 )
+add_executable(glpm ${SRC_FILES})
 
 target_include_directories(glpm PRIVATE
   ${CMAKE_SOURCE_DIR}/include
