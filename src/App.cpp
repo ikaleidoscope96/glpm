@@ -24,6 +24,9 @@ App::App()
         return;
     }
 
+    SDL_SetRenderLogicalPresentation(renderer_, kScreenWidth, kScreenHeight, SDL_LOGICAL_PRESENTATION_LETTERBOX);
+
+    grid_ = new Grid();
     mixer_ = new Mixer();
 
     if (!mixer_->isSuccessful()) {
@@ -37,6 +40,9 @@ App::App()
 App::~App()
 {
 
+    delete grid_;
+    grid_ = nullptr;
+
     delete mixer_;
     mixer_ = nullptr;
 
@@ -49,10 +55,10 @@ App::~App()
     SDL_Quit();
 }
 
-// SDL_Renderer* App::getRenderer()
-// {
-//     return renderer_;
-// }
+SDL_Renderer* const App::getRenderer()
+{
+    return renderer_;
+}
 
 bool App::isSuccessful()
 {
@@ -86,16 +92,17 @@ void App::handleEvents(SDL_Event event)
     }
 }
 
-void App::update(){}
+void App::update()
+{
+    grid_->update();
+}
 
 void App::render()
 {
-    const double now = ((double)SDL_GetTicks()) / 1000.f;
-    const float red = (float) (0.5 + 0.5 * SDL_sin(now));
-    const float green = (float) (0.5 + 0.5 * SDL_sin(now + SDL_PI_D * 2 / 3));
-    const float blue = (float) (0.5 + 0.5 * SDL_sin(now + SDL_PI_D * 4 / 3));
-
-    SDL_SetRenderDrawColorFloat(renderer_,red, green, blue, SDL_ALPHA_OPAQUE_FLOAT);
+    SDL_SetRenderDrawColor(renderer_, 0x12, 0x12, 0x1E, SDL_ALPHA_OPAQUE_FLOAT);
     SDL_RenderClear(renderer_);
+
+    grid_->render(getRenderer());
+
     SDL_RenderPresent(renderer_);
 }

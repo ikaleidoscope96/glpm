@@ -60,7 +60,7 @@ void Mixer::loadSounds(const std::string& path,
 
         }
     } catch (const fs::filesystem_error& e) {
-        std::cerr << "Filesystem error: " << e.what() << std::endl;
+        std::cerr << "Filesystem error: " << e.what() << '\n';
         success_ = false;
     }
 }
@@ -71,7 +71,7 @@ MIX_Track* Mixer::createTrack(const std::unordered_map<std::string, MIX_Audio*>&
 
     for (const auto& [name, sound] : map) {
         if (sound == nullptr) {
-            std::cerr << "Error null sound: " << name << std::endl;
+            std::cerr << "Error null sound: " << name << '\n';
             success_ = false;
             return track;
         }
@@ -95,7 +95,7 @@ void Mixer::play(const std::string& audioName, const std::string& soundName)
         track = soundEffectsTrack_;
         audio = soundEffects_;
     } else {
-        throw std::invalid_argument("Invaild audioName: " + audioName);
+        std::cerr << "Invaild audioName: " << audioName << '\n';
         return;
     }
 
@@ -103,7 +103,7 @@ void Mixer::play(const std::string& audioName, const std::string& soundName)
         throw std::invalid_argument("Invaild audioName: " + soundName);
     } else if (audio.at(soundName) == nullptr) {
         std::cerr << "Error sound " << soundName
-                  << " is null and cannot be played" << std::endl;
+                  << " is null and cannot be played" << '\n';
     }
 
     MIX_SetTrackAudio(track, audio[soundName]);

@@ -3,6 +3,7 @@
 
 #include <SDL3/SDL.h>
 #include <SDL3_mixer/SDL_mixer.h>
+#include "Grid.h"
 #include "Mixer.h"
 
 class App
@@ -11,7 +12,7 @@ public:
     App();
     ~App();
 
-    // SDL_Renderer* getRenderer();
+    SDL_Renderer* const getRenderer();
 
     bool isSuccessful();
     bool loadMedia();
@@ -21,6 +22,7 @@ public:
     void render();
 
 private:
+    Grid* grid_{nullptr};
     Mixer* mixer_{nullptr};
     SDL_Window* window_{nullptr};
     SDL_Renderer* renderer_{nullptr};
