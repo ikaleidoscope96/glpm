@@ -110,6 +110,33 @@ void Mixer::play(const std::string& audioName, const std::string& soundName)
     MIX_PlayTrack(track, 0);
 }
 
+void Mixer::handleEvent(const SDL_Event& event)
+{
+    if (event.type == SDL_EVENT_KEY_DOWN) {
+        switch (event.key.key) {
+        case SDLK_1:
+            play("soundEffects_", "pew");
+            break;
+
+        case SDLK_2:
+            play("soundEffects_", "interrupt");
+            break;
+
+        case SDLK_3:
+            play("songs_", "Airport Lounge");
+            break;
+
+        case SDLK_4:
+            play("songs_", "Aurea Carmina");
+            break;
+
+        case SDLK_5:
+            play("songs_", "Disco Lounge");
+            break;
+        }
+    }
+}
+
 void Mixer::destroy()
 {
     MIX_DestroyTrack(musicTrack_);

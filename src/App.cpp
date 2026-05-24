@@ -39,7 +39,6 @@ App::App()
 
 App::~App()
 {
-
     delete grid_;
     grid_ = nullptr;
 
@@ -65,31 +64,10 @@ bool App::isSuccessful()
     return success_;
 }
 
-void App::handleEvents(SDL_Event event)
+void App::handleEvent(const SDL_Event& event)
 {
-    if (event.type == SDL_EVENT_KEY_DOWN) {
-        switch (event.key.key) {
-        case SDLK_1:
-            mixer_->play("soundEffects_", "pew");
-            break;
-
-        case SDLK_2:
-            mixer_->play("soundEffects_", "interrupt");
-            break;
-
-        case SDLK_3:
-            mixer_->play("songs_", "Airport Lounge");
-            break;
-
-        case SDLK_4:
-            mixer_->play("songs_", "Aurea Carmina");
-            break;
-
-        case SDLK_5:
-            mixer_->play("songs_", "Disco Lounge");
-            break;
-        }
-    }
+    grid_->handleEvent(event);
+    mixer_->handleEvent(event);
 }
 
 void App::update()

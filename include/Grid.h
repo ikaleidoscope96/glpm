@@ -3,18 +3,20 @@
 
 #include <array>
 #include <SDL3/SDL.h>
+#include <SDL3/SDL_events.h>
 #include <SDL3/SDL_rect.h>
 #include "Constants.h"
 
 class Grid
 {
 public:
-    static constexpr int kGridSize{200};
-    static constexpr int kCellSize{kScreenHeight / kGridSize};
+    static constexpr int kGridSize{100};
+    static constexpr float kCellSize{static_cast<float>(kScreenHeight)/ kGridSize};
 
     Grid();
-    ~Grid();
 
+    void handleEvent(const SDL_Event& event);
+    void advanceGeneration();
     void update();
     void render(SDL_Renderer* renderer);
 
@@ -27,6 +29,7 @@ private:
     int countNeighbors (size_t row, size_t col, const auto& grid);
 
     std::array<std::array<Cell, kGridSize>, kGridSize> grid_;
+    bool paused_{false};
 };
 
 #endif

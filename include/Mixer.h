@@ -15,12 +15,11 @@ public:
 
     MIX_Track* createTrack(const std::unordered_map<std::string, MIX_Audio*>& map);
 
+    void handleEvent(const SDL_Event& event);
+    void play(const std::string& audioName, const std::string& soundName);
     void loadSounds(const std::string& path,
                     std::unordered_map<std::string, MIX_Audio*>& map,
                     bool precode);
-
-    void play(const std::string& audioName, const std::string& soundName);
-
     void destroy();
 
 private:

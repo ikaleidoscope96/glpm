@@ -17,7 +17,7 @@ public:
     bool isSuccessful();
     bool loadMedia();
 
-    void handleEvents(SDL_Event event);
+    void handleEvent(const SDL_Event& event);
     void update();
     void render();
 

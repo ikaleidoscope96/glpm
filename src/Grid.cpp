@@ -1,6 +1,10 @@
+#include <SDL3/SDL_blendmode.h>
+#include <SDL3/SDL_keycode.h>
 #include <SDL3/SDL_render.h>
 #include <SDL3/SDL_pixels.h>
+#include <cstddef>
 #include "Grid.h"
+#include "Constants.h"
 
 Grid::Grid()
 {
@@ -17,10 +21,11 @@ Grid::Grid()
     grid_[52][49].isAlive = true;
     grid_[52][50].isAlive = true;
     grid_[52][51].isAlive = true;
-}
 
-Grid::~Grid()
-{
+    grid_[98][10].isAlive = true;
+    grid_[98][11].isAlive = true;
+    grid_[99][10].isAlive = true;
+    grid_[99][11].isAlive = true;
 }
 
 int Grid::countNeighbors(size_t row, size_t col, const auto& grid)
@@ -45,10 +50,19 @@ int Grid::countNeighbors(size_t row, size_t col, const auto& grid)
     return livingNeighbors;
 }
 
-void Grid::update()
+void Grid::handleEvent(const SDL_Event& event)
+{
+    if (event.type == SDL_EVENT_KEY_DOWN) {
+        switch (event.key.key) {
+        case SDLK_SPACE:
+            paused_ = !paused_;
+        }
+    }
+}
+
+void Grid::advanceGeneration()
 {
     const auto currentGen = grid_;
-
     for (size_t row  = 0; row < currentGen.size(); ++row) {
         for (size_t col  = 0; col < currentGen[row].size(); ++col) {
 
@@ -70,16 +84,38 @@ void Grid::update()
     }
 }
 
+void Grid::update()
+{
+    if (!paused_) {
+        advanceGeneration();
+    }
+}
+
 void Grid::render(SDL_Renderer* renderer)
 {
+    for (size_t row = 0; row <= grid_.size(); ++row) {
+        SDL_SetRenderDrawColor(renderer, 0x55, 0x55, 0x55, 0x55);
+        SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_ADD);
+        SDL_RenderLine(renderer,
+                       kScreenWidth / 4.f,
+                       kCellSize * row,
+                       kScreenWidth / 4.f + kScreenHeight,
+                       kCellSize * row);
+    }
+
+    for (size_t col = 0; col <= grid_[0].size(); ++col) {
+        SDL_SetRenderDrawColor(renderer, 0x55, 0x55, 0x55, 0x55);
+        SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_ADD);
+        SDL_RenderLine(renderer,
+                       kScreenWidth / 4.f + (kCellSize * col),
+                       0.f,
+                       kScreenWidth / 4.f + (kCellSize * col),
+                       kScreenHeight);
+    }
+
     for (size_t row = 0; row < grid_.size(); ++row) {
         for (size_t col = 0; col < grid_[row].size(); ++col) {
-
             const Cell& cell = grid_[row][col];
-
-            SDL_SetRenderDrawColor(renderer, 0x55, 0x55, 0x55, 0x01);
-            SDL_RenderRect(renderer, &cell.rect);
-
             if (cell.isAlive) {
                 SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, SDL_ALPHA_OPAQUE);
                 SDL_RenderFillRect(renderer, &cell.rect);
