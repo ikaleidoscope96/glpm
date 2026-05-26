@@ -1,10 +1,8 @@
+#include <iostream>
 #include <SDL3/SDL_blendmode.h>
-#include <SDL3/SDL_keycode.h>
 #include <SDL3/SDL_render.h>
 #include <SDL3/SDL_pixels.h>
-#include <cstddef>
 #include "Grid.h"
-#include "Constants.h"
 
 Grid::Grid()
 {
@@ -16,16 +14,16 @@ Grid::Grid()
         }
     }
 
-    grid_[50][50].isAlive = true;
-    grid_[51][51].isAlive = true;
-    grid_[52][49].isAlive = true;
-    grid_[52][50].isAlive = true;
-    grid_[52][51].isAlive = true;
+    grid_[20][20].isAlive = true;
+    grid_[21][21].isAlive = true;
+    grid_[22][19].isAlive = true;
+    grid_[22][20].isAlive = true;
+    grid_[22][21].isAlive = true;
 
-    grid_[98][10].isAlive = true;
-    grid_[98][11].isAlive = true;
-    grid_[99][10].isAlive = true;
-    grid_[99][11].isAlive = true;
+    // grid_[98][10].isAlive = true;
+    // grid_[98][11].isAlive = true;
+    // grid_[99][10].isAlive = true;
+    // grid_[99][11].isAlive = true;
 }
 
 int Grid::countNeighbors(size_t row, size_t col, const auto& grid)
@@ -52,12 +50,30 @@ int Grid::countNeighbors(size_t row, size_t col, const auto& grid)
 
 void Grid::handleEvent(const SDL_Event& event)
 {
+    float mouseX,mouseY;
+    int x,y;
+
     if (event.type == SDL_EVENT_KEY_DOWN) {
         switch (event.key.key) {
         case SDLK_SPACE:
             paused_ = !paused_;
+            break;
         }
     }
+
+    if (event.type == SDL_EVENT_MOUSE_BUTTON_DOWN) {
+        SDL_GetMouseState(&mouseX, &mouseY);
+        std::cout << "X: " << mouseX << " Y: " << mouseY << '\n';
+
+        if (mouseX >= (kScreenWidth / 4.f) &&
+            mouseX <= (kScreenWidth / 4.f + kScreenHeight))
+        {
+            x = static_cast<size_t>(((mouseX - (kScreenWidth / 4.f)) / kCellSize));
+            y = static_cast<size_t>(mouseY / kCellSize);
+            grid_[x][y].isAlive = !(grid_[x][y].isAlive);
+        }
+    }
+
 }
 
 void Grid::advanceGeneration()
