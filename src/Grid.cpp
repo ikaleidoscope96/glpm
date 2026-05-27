@@ -1,3 +1,4 @@
+#include <cstddef>
 #include <iostream>
 #include <SDL3/SDL_blendmode.h>
 #include <SDL3/SDL_render.h>
@@ -9,8 +10,8 @@ Grid::Grid()
     for (size_t row = 0; row < grid_.size(); ++row) {
         for (size_t col = 0; col < grid_[row].size(); ++col) {
             Cell& cell{grid_[row][col]};
-            cell.rect.x = col * kCellSize + (kScreenWidth / 4.f);
-            cell.rect.y = row * kCellSize;
+            cell.rect.x = row * kCellSize + (kScreenWidth / 4.f);
+            cell.rect.y = col * kCellSize;
         }
     }
 
@@ -19,11 +20,6 @@ Grid::Grid()
     grid_[22][19].isAlive = true;
     grid_[22][20].isAlive = true;
     grid_[22][21].isAlive = true;
-
-    // grid_[98][10].isAlive = true;
-    // grid_[98][11].isAlive = true;
-    // grid_[99][10].isAlive = true;
-    // grid_[99][11].isAlive = true;
 }
 
 int Grid::countNeighbors(size_t row, size_t col, const auto& grid)
@@ -51,7 +47,7 @@ int Grid::countNeighbors(size_t row, size_t col, const auto& grid)
 void Grid::handleEvent(const SDL_Event& event)
 {
     float mouseX,mouseY;
-    int x,y;
+    size_t x,y;
 
     if (event.type == SDL_EVENT_KEY_DOWN) {
         switch (event.key.key) {
@@ -63,7 +59,6 @@ void Grid::handleEvent(const SDL_Event& event)
 
     if (event.type == SDL_EVENT_MOUSE_BUTTON_DOWN) {
         SDL_GetMouseState(&mouseX, &mouseY);
-        std::cout << "X: " << mouseX << " Y: " << mouseY << '\n';
 
         if (mouseX >= (kScreenWidth / 4.f) &&
             mouseX <= (kScreenWidth / 4.f + kScreenHeight))
