@@ -2,6 +2,7 @@
 #define GRID_H
 
 #include <array>
+#include <cstdint>
 #include <SDL3/SDL.h>
 #include <SDL3/SDL_events.h>
 #include <SDL3/SDL_rect.h>
@@ -16,7 +17,6 @@ public:
     Grid();
 
     void handleEvent(const SDL_Event& event);
-    void advanceGeneration();
     void update();
     void render(SDL_Renderer* renderer);
 
@@ -24,9 +24,14 @@ private:
     struct Cell {
         bool isAlive{false};
         SDL_FRect rect{0.f, 0.f, kCellSize, kCellSize};
+        uint8_t r{0xFF};
+        uint8_t g{0xFF};
+        uint8_t b{0xFF};
     };
 
     int countNeighbors (size_t row, size_t col, const auto& grid);
+    auto computeGenerations(int generations, auto grid);
+    void clear();
 
     std::array<std::array<Cell, kGridSize>, kGridSize> grid_;
     bool paused_{false};

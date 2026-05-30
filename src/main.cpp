@@ -5,7 +5,7 @@
 
 SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[])
 {
-    SDL_SetAppMetadata(kTitle, "1.0", "com.example.renderer-clear");
+    SDL_SetAppMetadata(kTitle, kVersion, kIdentifer);
     App* app = new App;
 
     if (!app->isSuccessful()) {
