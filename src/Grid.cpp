@@ -54,7 +54,7 @@ int Grid::countNeighbors(size_t row, size_t col, const auto& grid)
     return livingNeighbors;
 }
 
-auto Grid::computeGenerations(int generations, auto grid)
+auto Grid::computeGenerations(int generations, auto& grid)
 {
     if (generations == 0) {
         return grid;
@@ -131,9 +131,15 @@ void Grid::update()
         return;
     }
 
-    auto nextGen{computeGenerations(1, grid_)};
-    const auto& secondGen{computeGenerations(2, grid_)};
-    const auto& thirdGen{computeGenerations(3, grid_)};
+    // Passing copy of grid_ to computeGenerations to prevent excessive copying
+    // Since computeGenerations is recusive
+    auto copy = grid_;
+
+    auto nextGen{computeGenerations(1, copy)};
+    const auto& secondGen{computeGenerations(2, copy)};
+    const auto& thirdGen{computeGenerations(3, copy)};
+
+    data = {0};
 
     for (size_t row  = 0; row < grid_.size(); ++row) {
         for (size_t col  = 0; col < grid_[row].size(); ++col) {
@@ -148,21 +154,28 @@ void Grid::update()
             nextCell.g = 0xFF;
             nextCell.b = 0xFF;
 
-            if (currentCell.isAlive && nextCell.isAlive) {
+            if (nextCell.isAlive) {
+                data.livingCells++;
+            }
+
+            if (nextCell.isAlive && secondGenCell.isAlive && thirdGenCell.isAlive) {
                 nextCell.r = 0xFF;
                 nextCell.g = 0xFF;
                 nextCell.b = 0x00;
-            } else if (currentCell.isAlive == secondGenCell.isAlive &&
-                nextCell.isAlive == thirdGenCell.isAlive &&
-                currentCell.isAlive != nextCell.isAlive)
-            {
-                nextCell.r = 0x00;
-                nextCell.g = 0x00;
-                nextCell.b = 0xFF;
+                data.constantCells++;
             } else if (nextCell.isAlive && !secondGenCell.isAlive) {
                 nextCell.r = 0xFF;
                 nextCell.g = 0x30;
                 nextCell.b = 0x30;
+                data.dyingCells++;
+            } else if (currentCell.isAlive != nextCell.isAlive &&
+                       secondGenCell.isAlive != thirdGenCell.isAlive &&
+                       nextCell.isAlive == true)
+            {
+                nextCell.r = 0x00;
+                nextCell.g = 0x00;
+                nextCell.b = 0xFF;
+                data.oscillatingCells++;
             }
         }
     }

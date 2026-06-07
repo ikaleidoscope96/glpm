@@ -1,5 +1,4 @@
-#ifndef GIRD_H
-#define GRID_H
+#pragma once
 
 #include <array>
 #include <cstdint>
@@ -11,8 +10,16 @@
 class Grid
 {
 public:
+    struct Data {
+        int livingCells{0};
+        int dyingCells{0};
+        int constantCells{0};
+        int oscillatingCells{0};
+    };
+
     static constexpr int kGridSize{100};
     static constexpr float kCellSize{static_cast<float>(kScreenHeight)/ kGridSize};
+    Data data;
 
     Grid();
 
@@ -29,12 +36,10 @@ private:
         uint8_t b{0xFF};
     };
 
-    int countNeighbors (size_t row, size_t col, const auto& grid);
-    auto computeGenerations(int generations, auto grid);
-    void clear();
-
     std::array<std::array<Cell, kGridSize>, kGridSize> grid_;
     bool paused_{false};
-};
 
-#endif
+    int countNeighbors (size_t row, size_t col, const auto& grid);
+    auto computeGenerations(int generations, auto& grid);
+    void clear();
+};

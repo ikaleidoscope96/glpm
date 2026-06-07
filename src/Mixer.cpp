@@ -1,23 +1,21 @@
 #include <filesystem>
 #include <iostream>
-#include <stdexcept>
 #include <unordered_map>
 #include <SDL3/SDL_init.h>
-#include <SDL3_mixer/SDL_mixer.h>
 #include "Mixer.h"
 
 Mixer::Mixer()
 {
     if (!MIX_Init()) {
-        SDL_Log("SDL_Mixer could not initialize! SDL error: %s\n", SDL_GetError());
-        success_ = false;
+        SDL_Log("SDL_Mixer could not initialize! SDL_mixer error: %s\n", SDL_GetError());
+        success = false;
     }
 
     if (mixer_ = MIX_CreateMixerDevice(SDL_AUDIO_DEVICE_DEFAULT_PLAYBACK, nullptr);
         mixer_ == nullptr)
     {
         SDL_Log("SDL_mixer could not create mixer! SDL_mixer Error: %s\n", SDL_GetError());
-        success_ = false;
+        success = false;
     }
 
     loadSounds("../assets/music", songs_, false);
@@ -30,11 +28,6 @@ Mixer::Mixer()
 Mixer::~Mixer()
 {
     destroy();
-}
-
-bool Mixer::isSuccessful()
-{
-    return success_;
 }
 
 void Mixer::loadSounds(const std::string& path,
@@ -54,14 +47,14 @@ void Mixer::loadSounds(const std::string& path,
                 {
                     SDL_Log("Unable to load sound: %s! SDL_mixer error: %s\n",
                             name.c_str(), SDL_GetError());
-                    success_ = false;
+                    success = false;
                 }
             }
 
         }
     } catch (const fs::filesystem_error& e) {
         std::cerr << "Filesystem error: " << e.what() << '\n';
-        success_ = false;
+        success = false;
     }
 }
 
@@ -72,13 +65,13 @@ MIX_Track* Mixer::createTrack(const std::unordered_map<std::string, MIX_Audio*>&
     for (const auto& [name, sound] : map) {
         if (sound == nullptr) {
             std::cerr << "Error null sound: " << name << '\n';
-            success_ = false;
+            success = false;
             return track;
         }
     }
     if (track = MIX_CreateTrack(mixer_); track == nullptr) {
         SDL_Log("Failed to create track! SDL_mixer Error: %s\n", SDL_GetError());
-        success_ = false;
+        success = false;
     }
     return track;
 }

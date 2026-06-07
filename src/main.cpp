@@ -8,7 +8,7 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[])
     SDL_SetAppMetadata(kTitle, kVersion, kIdentifer);
     App* app = new App;
 
-    if (!app->isSuccessful()) {
+    if (!app->success) {
         SDL_Log("Couldn't initalize program!\n");
         return SDL_APP_FAILURE;
     }

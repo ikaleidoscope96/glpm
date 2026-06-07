@@ -1,5 +1,4 @@
-#ifndef MIXER_H
-#define MIXER_H
+#pragma once
 
 #include <string>
 #include <unordered_map>
@@ -8,29 +7,25 @@
 class Mixer
 {
 public:
+    bool success{true};
+
     Mixer();
     ~Mixer();
 
-    bool isSuccessful();
+    void handleEvent(const SDL_Event& event);
+    void destroy();
+
+private:
+    std::unordered_map<std::string, MIX_Audio*> songs_;
+    std::unordered_map<std::string, MIX_Audio*> soundEffects_;
+
+    MIX_Track* musicTrack_{nullptr};
+    MIX_Track* soundEffectsTrack_{nullptr};
+    MIX_Mixer* mixer_{nullptr};
 
     MIX_Track* createTrack(const std::unordered_map<std::string, MIX_Audio*>& map);
-
-    void handleEvent(const SDL_Event& event);
     void play(const std::string& audioName, const std::string& soundName);
     void loadSounds(const std::string& path,
                     std::unordered_map<std::string, MIX_Audio*>& map,
                     bool precode);
-    void destroy();
-
-private:
-    MIX_Track* musicTrack_{nullptr};
-    MIX_Track* soundEffectsTrack_{nullptr};
-
-    std::unordered_map<std::string, MIX_Audio*> songs_;
-    std::unordered_map<std::string, MIX_Audio*> soundEffects_;
-
-    MIX_Mixer* mixer_{nullptr};
-    bool success_{true};
 };
-
-#endif
