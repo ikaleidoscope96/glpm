@@ -1,15 +1,14 @@
 #include <SDL3/SDL_events.h>
 #include <SDL3/SDL_init.h>
-#include <SDL3/SDL_mouse.h>
 #include <SDL3/SDL_render.h>
 #include <SDL3_ttf/SDL_ttf.h>
 #include "App.h"
 #include "Constants.h"
-#include "Font.h"
-#include "Mixer.h"
 
 App::App()
 {
+    SDL_SetAppMetadata(kTitle, kVersion, kIdentifer);
+
     if (!SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO)) {
         SDL_Log("SDL could not initialize! SDL error: %s\n", SDL_GetError());
         return;
@@ -30,9 +29,7 @@ App::App()
     SDL_SetRenderLogicalPresentation(renderer_, kScreenWidth, kScreenHeight,
                                      SDL_LOGICAL_PRESENTATION_LETTERBOX);
 
-    mixer_ = new Mixer();
-    grid_ = new Grid();
-    font_ = new Font(renderer_, &grid_->data);
+    font_ = new Font(renderer_, &grid_.data);
 
     success = true;
 }
@@ -40,18 +37,9 @@ App::App()
 App::~App()
 {
     delete font_;
-    font_ = nullptr;
-
-    delete grid_;
-    grid_ = nullptr;
-
-    delete mixer_;
-    mixer_ = nullptr;
-
+    mixer_.destroy();
     SDL_DestroyRenderer(renderer_);
-    renderer_ = nullptr;
     SDL_DestroyWindow(window_);
-    window_ = nullptr;
 
     TTF_Quit();
     MIX_Quit();
@@ -60,13 +48,13 @@ App::~App()
 
 void App::handleEvent(const SDL_Event& event)
 {
-    grid_->handleEvent(event);
-    mixer_->handleEvent(event);
+    grid_.handleEvent(event);
+    mixer_.handleEvent(event);
 }
 
 void App::update()
 {
-    grid_->update();
+    grid_.update();
     font_->update();
 }
 
@@ -75,7 +63,7 @@ void App::render()
     SDL_SetRenderDrawColor(renderer_, 0x12, 0x12, 0x1E, SDL_ALPHA_OPAQUE_FLOAT);
     SDL_RenderClear(renderer_);
 
-    grid_->render(renderer_);
+    grid_.render(renderer_);
     font_->render();
 
     SDL_RenderPresent(renderer_);

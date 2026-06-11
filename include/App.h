@@ -23,8 +23,8 @@ public:
 
 private:
     Font* font_{nullptr};
-    Grid* grid_{nullptr};
-    Mixer* mixer_{nullptr};
+    Grid grid_;
+    Mixer mixer_;
 
     SDL_Window* window_{nullptr};
     SDL_Renderer* renderer_{nullptr};

@@ -132,12 +132,6 @@ void Mixer::handleEvent(const SDL_Event& event)
 
 void Mixer::destroy()
 {
-    MIX_DestroyTrack(musicTrack_);
-    musicTrack_ = nullptr;
-
-    MIX_DestroyTrack(soundEffectsTrack_);
-    soundEffectsTrack_ = nullptr;
-
     for (auto& [name, sound] : songs_) {
         MIX_DestroyAudio(songs_[name]);
         songs_[name] = nullptr;
@@ -149,6 +143,12 @@ void Mixer::destroy()
         soundEffects_[name] = nullptr;
     }
     soundEffects_.clear();
+
+    MIX_DestroyTrack(musicTrack_);
+    musicTrack_ = nullptr;
+
+    MIX_DestroyTrack(soundEffectsTrack_);
+    soundEffectsTrack_ = nullptr;
 
     MIX_DestroyMixer(mixer_);
     mixer_ = nullptr;
