@@ -17,7 +17,7 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[])
 
 SDL_AppResult SDL_AppEvent(void *appstate, SDL_Event *event)
 {
-    App* app = static_cast<App*>(appstate);
+    App* app{static_cast<App*>(appstate)};
 
     if (event->type == SDL_EVENT_QUIT) {
         return SDL_APP_SUCCESS;
@@ -30,7 +30,7 @@ SDL_AppResult SDL_AppEvent(void *appstate, SDL_Event *event)
 
 SDL_AppResult SDL_AppIterate(void *appstate)
 {
-    App* app = static_cast<App*>(appstate);
+    App* app{static_cast<App*>(appstate)};
 
     app->update();
     app->render();
@@ -40,6 +40,9 @@ SDL_AppResult SDL_AppIterate(void *appstate)
 
 void SDL_AppQuit(void *appstate, SDL_AppResult result)
 {
-    App* app = static_cast<App*>(appstate);
+    App* app{static_cast<App*>(appstate)};
     delete app;
+
+    TTF_Quit();
+    MIX_Quit();
 }

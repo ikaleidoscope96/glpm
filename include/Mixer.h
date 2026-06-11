@@ -13,8 +13,6 @@ public:
     ~Mixer();
 
     void handleEvent(const SDL_Event& event);
-    void destroy();
-
 private:
     std::unordered_map<std::string, MIX_Audio*> songs_;
     std::unordered_map<std::string, MIX_Audio*> soundEffects_;

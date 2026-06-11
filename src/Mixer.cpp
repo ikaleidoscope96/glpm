@@ -1,3 +1,4 @@
+#include <SDL3/SDL_log.h>
 #include <filesystem>
 #include <iostream>
 #include <unordered_map>
@@ -27,7 +28,17 @@ Mixer::Mixer()
 
 Mixer::~Mixer()
 {
-    destroy();
+    for (auto& [name, sound] : songs_) {
+        MIX_DestroyAudio(songs_[name]);
+    }
+
+    for (auto& [name, sound] : soundEffects_) {
+        MIX_DestroyAudio(soundEffects_[name]);
+    }
+
+    MIX_DestroyTrack(musicTrack_);
+    MIX_DestroyTrack(soundEffectsTrack_);
+    MIX_DestroyMixer(mixer_);
 }
 
 void Mixer::loadSounds(const std::string& path,
@@ -128,28 +139,4 @@ void Mixer::handleEvent(const SDL_Event& event)
             break;
         }
     }
-}
-
-void Mixer::destroy()
-{
-    for (auto& [name, sound] : songs_) {
-        MIX_DestroyAudio(songs_[name]);
-        songs_[name] = nullptr;
-    }
-    songs_.clear();
-
-    for (auto& [name, sound] : soundEffects_) {
-        MIX_DestroyAudio(soundEffects_[name]);
-        soundEffects_[name] = nullptr;
-    }
-    soundEffects_.clear();
-
-    MIX_DestroyTrack(musicTrack_);
-    musicTrack_ = nullptr;
-
-    MIX_DestroyTrack(soundEffectsTrack_);
-    soundEffectsTrack_ = nullptr;
-
-    MIX_DestroyMixer(mixer_);
-    mixer_ = nullptr;
 }

@@ -1,5 +1,6 @@
 #include <SDL3/SDL_events.h>
 #include <SDL3/SDL_init.h>
+#include <SDL3/SDL_log.h>
 #include <SDL3/SDL_render.h>
 #include <SDL3_ttf/SDL_ttf.h>
 #include "App.h"
@@ -37,13 +38,8 @@ App::App()
 App::~App()
 {
     delete font_;
-    mixer_.destroy();
     SDL_DestroyRenderer(renderer_);
     SDL_DestroyWindow(window_);
-
-    TTF_Quit();
-    MIX_Quit();
-    SDL_Quit();
 }
 
 void App::handleEvent(const SDL_Event& event)
