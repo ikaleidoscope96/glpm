@@ -30,14 +30,11 @@ App::App()
     SDL_SetRenderLogicalPresentation(renderer_, kScreenWidth, kScreenHeight,
                                      SDL_LOGICAL_PRESENTATION_LETTERBOX);
 
-    font_ = new Font(renderer_, &grid_.data);
-
     success = true;
 }
 
 App::~App()
 {
-    delete font_;
     SDL_DestroyRenderer(renderer_);
     SDL_DestroyWindow(window_);
 }
@@ -51,7 +48,6 @@ void App::handleEvent(const SDL_Event& event)
 void App::update()
 {
     grid_.update();
-    font_->update();
 }
 
 void App::render()
@@ -60,7 +56,6 @@ void App::render()
     SDL_RenderClear(renderer_);
 
     grid_.render(renderer_);
-    font_->render();
 
     SDL_RenderPresent(renderer_);
 }

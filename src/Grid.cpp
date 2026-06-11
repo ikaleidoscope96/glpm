@@ -30,6 +30,12 @@ Grid::Grid()
     grid_[22][19].isAlive = true;
     grid_[22][20].isAlive = true;
     grid_[22][21].isAlive = true;
+
+    font_.texts.push_back({"Data"});
+    font_.texts.push_back({"Living Cells: ", &data_.livingCells});
+    font_.texts.push_back({"Dying Cells: ", &data_.dyingCells});
+    font_.texts.push_back({"Constant Cells: ", &data_.constantCells});
+    font_.texts.push_back({"Oscillating Cells: ", &data_.oscillatingCells});
 }
 
 int Grid::countNeighbors(size_t row, size_t col, const auto& grid)
@@ -134,13 +140,11 @@ void Grid::update()
     // Passing copy of grid_ to computeGenerations to prevent excessive copying
     // Since computeGenerations is recusive
     auto copy = grid_;
-
     auto nextGen{computeGenerations(1, copy)};
     const auto& secondGen{computeGenerations(2, copy)};
     const auto& thirdGen{computeGenerations(3, copy)};
 
-    data = {0};
-
+    data_ = {0};
     for (size_t row  = 0; row < grid_.size(); ++row) {
         for (size_t col  = 0; col < grid_[row].size(); ++col) {
 
@@ -155,19 +159,19 @@ void Grid::update()
             nextCell.b = 0xFF;
 
             if (nextCell.isAlive) {
-                data.livingCells++;
+                data_.livingCells++;
             }
 
             if (nextCell.isAlive && secondGenCell.isAlive && thirdGenCell.isAlive) {
                 nextCell.r = 0xFF;
                 nextCell.g = 0xFF;
                 nextCell.b = 0x00;
-                data.constantCells++;
+                data_.constantCells++;
             } else if (nextCell.isAlive && !secondGenCell.isAlive) {
                 nextCell.r = 0xFF;
                 nextCell.g = 0x30;
                 nextCell.b = 0x30;
-                data.dyingCells++;
+                data_.dyingCells++;
             } else if (currentCell.isAlive != nextCell.isAlive &&
                        secondGenCell.isAlive != thirdGenCell.isAlive &&
                        nextCell.isAlive == true)
@@ -175,7 +179,7 @@ void Grid::update()
                 nextCell.r = 0x00;
                 nextCell.g = 0x00;
                 nextCell.b = 0xFF;
-                data.oscillatingCells++;
+                data_.oscillatingCells++;
             }
         }
     }
@@ -217,4 +221,6 @@ void Grid::render(SDL_Renderer* renderer)
             }
         }
     }
+
+    font_.render(renderer);
 }

@@ -3,7 +3,6 @@
 #include <SDL3/SDL.h>
 #include <SDL3_mixer/SDL_mixer.h>
 #include <SDL3_ttf/SDL_ttf.h>
-#include "Font.h"
 #include "Grid.h"
 #include "Mixer.h"
 
@@ -22,7 +21,6 @@ public:
     void render();
 
 private:
-    Font* font_{nullptr};
     Grid grid_;
     Mixer mixer_;
 

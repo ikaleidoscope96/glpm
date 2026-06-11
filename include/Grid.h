@@ -6,20 +6,13 @@
 #include <SDL3/SDL_events.h>
 #include <SDL3/SDL_rect.h>
 #include "Constants.h"
+#include "Font.h"
 
 class Grid
 {
 public:
-    struct Data {
-        int livingCells{0};
-        int dyingCells{0};
-        int constantCells{0};
-        int oscillatingCells{0};
-    };
-
     static constexpr int kGridSize{100};
     static constexpr float kCellSize{static_cast<float>(kScreenHeight)/ kGridSize};
-    Data data;
 
     Grid();
 
@@ -36,6 +29,15 @@ private:
         uint8_t b{0xFF};
     };
 
+    struct Data {
+        int livingCells{0};
+        int dyingCells{0};
+        int constantCells{0};
+        int oscillatingCells{0};
+    };
+
+    Data data_;
+    Font font_;
     std::array<std::array<Cell, kGridSize>, kGridSize> grid_;
     bool paused_{false};
 
