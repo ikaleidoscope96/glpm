@@ -1,8 +1,5 @@
-#include <SDL3/SDL_events.h>
 #include <SDL3/SDL_init.h>
 #include <SDL3/SDL_log.h>
-#include <SDL3/SDL_render.h>
-#include <SDL3_ttf/SDL_ttf.h>
 #include "App.h"
 #include "Constants.h"
 

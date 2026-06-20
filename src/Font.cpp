@@ -1,4 +1,7 @@
 #include "Font.h"
+#include <SDL3/SDL_timer.h>
+#include <cstdint>
+#include <sstream>
 
 Font::Font()
 {
@@ -29,7 +32,7 @@ void Font::render(SDL_Renderer* renderer)
     for (auto& text: texts) {
         text.texture.destroy();
 
-        if (text.type == nullptr) {
+        if (!text.update) {
             if(!text.texture.loadFromRenderedText(text.text,
                                                   textColor,
                                                   font_,
@@ -39,10 +42,28 @@ void Font::render(SDL_Renderer* renderer)
                 success = false;
             }
         } else {
-            auto tmp = text.text;
-            tmp.append(std::to_string(*text.type));
+            std::stringstream tmp;
+            if (auto ptr{std::get_if<int*>(&text.info)}) {
+                tmp << text.text << **(ptr);
+            } else if (auto ptr{std::get_if<uint64_t*>(&text.info)}) {
+                uint64_t seconds = **(ptr) / 1000;
+                uint64_t minutes = seconds / 60;
+                uint64_t hours = minutes / 60;
 
-            if(!text.texture.loadFromRenderedText(tmp,
+                tmp << text.text;
+                if (hours > 0) {
+                    tmp << hours << ':';
+                }
+                if (minutes > 0) {
+                    tmp << minutes << ':';
+                }
+                if ( minutes > 0 && seconds % 60 < 10) {
+                    tmp << "0";
+                }
+                tmp << seconds % 60;
+            }
+
+            if(!text.texture.loadFromRenderedText(tmp.str(),
                                                   textColor,
                                                   font_,
                                                   renderer))
@@ -51,7 +72,6 @@ void Font::render(SDL_Renderer* renderer)
                 success = false;
             }
         }
-
     }
 
     for (float y{0}; auto& text : texts) {

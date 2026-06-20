@@ -1,12 +1,11 @@
 #pragma once
 
 #include <array>
-#include <cstdint>
-#include <SDL3/SDL.h>
 #include <SDL3/SDL_events.h>
 #include <SDL3/SDL_rect.h>
 #include "Constants.h"
 #include "Font.h"
+#include "Timer.h"
 
 class Grid
 {
@@ -34,14 +33,16 @@ private:
         int dyingCells{0};
         int constantCells{0};
         int oscillatingCells{0};
+        int tickSpeed{1};
     };
 
     Data data_;
     Font font_;
+    Timer timer_;
     std::array<std::array<Cell, kGridSize>, kGridSize> grid_;
-    bool paused_{false};
 
     int countNeighbors (size_t row, size_t col, const auto& grid);
     auto computeGenerations(int generations, auto& grid);
+    void advanceGeneration();
     void clear();
 };

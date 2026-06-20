@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <variant>
 #include <vector>
 #include <SDL3/SDL_render.h>
 #include <SDL3_ttf/SDL_ttf.h>
@@ -10,7 +11,8 @@ class Font {
 public:
     struct Text {
         std::string text;
-        int* type{nullptr};
+        std::variant<int*, uint64_t*> info;
+        bool update{false};
         Texture texture;
     };
 
